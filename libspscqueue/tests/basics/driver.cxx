@@ -1,34 +1,29 @@
-#include <sstream>
-#include <stdexcept>
-
-#include <rigtorp/spscqueue.h>
+#include <rigtorp/SPSCQueue.h>
 
 #undef NDEBUG
 #include <cassert>
 
 int main ()
 {
-  using namespace std;
-  using namespace spscqueue;
+  using namespace rigtorp;
 
-  // Basics.
-  //
-  {
-    ostringstream o;
-    say_hello (o, "World");
-    assert (o.str () == "Hello, World!\n");
-  }
+  SPSCQueue<int> q (2);
 
-  // Empty name.
-  //
-  try
-  {
-    ostringstream o;
-    say_hello (o, "");
-    assert (false);
-  }
-  catch (const invalid_argument& e)
-  {
-    assert (e.what () == string ("empty name"));
-  }
+  assert (q.front () == nullptr);
+
+  assert (q.try_push (1));
+  assert (q.try_push (2));
+  assert (!q.try_push (3)); // Full.
+
+  assert (*q.front () == 1);
+  q.pop ();
+
+  assert (*q.front () == 2);
+  q.pop ();
+
+  assert (q.front () == nullptr);
+
+  q.emplace (3);
+  assert (*q.front () == 3);
+  q.pop ();
 }
