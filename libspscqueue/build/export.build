@@ -1,0 +1,6 @@
+$out_root/
+{
+  include rigtorp/
+}
+
+export $out_root/rigtorp/$import.target
