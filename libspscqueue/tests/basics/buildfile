@@ -1,3 +1,6 @@
 import libs = libspscqueue%lib{spscqueue}
 
 exe{driver}: {hxx cxx}{**} $libs testscript{**}
+
+if ($cxx.target.system != 'win32-msvc')
+  cxx.libs += -pthread
